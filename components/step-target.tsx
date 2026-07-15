@@ -30,8 +30,8 @@ export function StepTarget({ data, updateData }: Props) {
         <div className="space-y-2">
           <Label htmlFor="platform">Platform</Label>
           <Select
-            value={data.platform || undefined}
-            onValueChange={(v) => updateData({ platform: v || "" })}
+            value={data.platform}
+            onValueChange={(v) => updateData({ platform: v ?? "" })}
           >
             <SelectTrigger>
               <SelectValue placeholder="Select platform" />
@@ -48,8 +48,8 @@ export function StepTarget({ data, updateData }: Props) {
         <div className="space-y-2">
           <Label htmlFor="timeline">Timeline / Jadwal</Label>
           <Select
-            value={data.timeline || undefined}
-            onValueChange={(v) => updateData({ timeline: v || "" })}
+            value={data.timeline}
+            onValueChange={(v) => updateData({ timeline: v ?? "" })}
           >
             <SelectTrigger>
               <SelectValue placeholder="Select timeline" />
