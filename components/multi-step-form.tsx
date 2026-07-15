@@ -23,6 +23,7 @@ const initialData: FormData = {
   features: "",
   tech_stack: "",
   reference_links: "",
+  model: "qwen/qwen3-32b",
 }
 
 export function MultiStepForm() {

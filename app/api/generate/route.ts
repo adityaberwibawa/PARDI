@@ -13,7 +13,7 @@ export async function POST(request: Request) {
     }
 
     const body = await request.json()
-    const { project_name, idea_description, target_user, platform, timeline, features, tech_stack, reference_links } = body
+    const { project_name, idea_description, target_user, platform, timeline, features, tech_stack, reference_links, model } = body
 
     if (!project_name || !idea_description) {
       return NextResponse.json({ error: "Project name and description are required" }, { status: 400 })
@@ -39,9 +39,10 @@ export async function POST(request: Request) {
     if (submissionError) throw submissionError
 
     // Generate PRD from Groq
-    const formData = { project_name, idea_description, target_user, platform, timeline, features, tech_stack, reference_links }
+    const formData = { project_name, idea_description, target_user, platform, timeline, features, tech_stack, reference_links, model: model || "qwen/qwen3-32b" }
+    const selectedModel = model || "qwen/qwen3-32b"
     const prdPrompt = buildPrdPrompt(formData)
-    const prdContent = await generateWithGroq(prdPrompt)
+    const prdContent = await generateWithGroq(prdPrompt, selectedModel)
 
     // Extract mermaid diagram from PRD content
     const mermaidMatch = prdContent.match(/```mermaid\n([\s\S]*?)```/)

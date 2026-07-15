@@ -3,7 +3,9 @@
 import { Textarea } from "@/components/ui/textarea"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import type { FormData } from "@/lib/types"
+import { AVAILABLE_MODELS } from "@/lib/types"
 
 interface Props {
   data: FormData
@@ -42,6 +44,25 @@ export function StepTechnical({ data, updateData }: Props) {
           onChange={(e) => updateData({ tech_stack: e.target.value })}
           required
         />
+      </div>
+      <div className="space-y-2">
+        <Label>AI Model</Label>
+        <Select
+          value={data.model}
+          onValueChange={(v) => updateData({ model: v ?? "qwen/qwen3-32b" })}
+        >
+          <SelectTrigger>
+            <SelectValue placeholder="Select AI model" />
+          </SelectTrigger>
+          <SelectContent>
+            {AVAILABLE_MODELS.map((m) => (
+              <SelectItem key={m.id} value={m.id}>
+                {m.name} — {m.speed} ({m.desc})
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+        <p className="text-xs text-muted-foreground">Default: Qwen 3 32B (best quality PRD)</p>
       </div>
       <div className="space-y-2">
         <Label htmlFor="reference_links">Referensi / Inspiration (optional)</Label>

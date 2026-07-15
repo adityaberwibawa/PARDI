@@ -1,4 +1,4 @@
-﻿export async function generateWithGroq(prompt: string): Promise<string> {
+﻿export async function generateWithGroq(prompt: string, model = "qwen/qwen3-32b"): Promise<string> {
   const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
     method: "POST",
     headers: {
@@ -6,7 +6,7 @@
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      model: "openai/gpt-oss-120b",
+      model,
       messages: [
         {
           role: "system",
