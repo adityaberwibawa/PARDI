@@ -43,7 +43,7 @@ export function MermaidDiagram({ code }: Props) {
         }
         setLoading(false)
       } catch (err: any) {
-        setError(err.message || "Failed to render diagram")
+        setError("Mermaid syntax error. Raw diagram code shown below:")
         setLoading(false)
       }
     }
@@ -77,8 +77,11 @@ export function MermaidDiagram({ code }: Props) {
           </div>
         )}
         {error && (
-          <div className="text-destructive text-sm p-4 bg-destructive/10 rounded-lg">
-            {error}
+          <div className="space-y-4">
+            <div className="text-destructive text-sm p-4 bg-destructive/10 rounded-lg">
+              {error}
+            </div>
+            <pre className="text-xs bg-muted p-4 rounded-lg overflow-x-auto font-mono whitespace-pre-wrap">{code}</pre>
           </div>
         )}
         <div ref={ref} className="flex justify-center overflow-x-auto" />
