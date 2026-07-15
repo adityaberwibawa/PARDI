@@ -1,4 +1,4 @@
-@import "tailwindcss";
+﻿@import "tailwindcss";
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 
@@ -83,6 +83,41 @@
   --sidebar-ring: #222;
 }
 
+.dark {
+  --background: #0a0a0a;
+  --foreground: #ededed;
+  --card: #141414;
+  --card-foreground: #ededed;
+  --popover: #141414;
+  --popover-foreground: #ededed;
+  --primary: #ededed;
+  --primary-foreground: #0a0a0a;
+  --secondary: #1a1a1a;
+  --secondary-foreground: #ededed;
+  --muted: #1a1a1a;
+  --muted-foreground: #777;
+  --accent: #1a1a1a;
+  --accent-foreground: #ededed;
+  --destructive: #fa5d29;
+  --border: #222;
+  --input: #222;
+  --ring: #555;
+  --chart-1: #ededed;
+  --chart-2: #888;
+  --chart-3: #555;
+  --chart-4: #333;
+  --chart-5: #1a1a1a;
+  --radius: 0.5rem;
+  --sidebar: #0a0a0a;
+  --sidebar-foreground: #ededed;
+  --sidebar-primary: #ededed;
+  --sidebar-primary-foreground: #0a0a0a;
+  --sidebar-accent: #1a1a1a;
+  --sidebar-accent-foreground: #ededed;
+  --sidebar-border: #222;
+  --sidebar-ring: #555;
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;
@@ -92,9 +127,15 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
+    font-optical-sizing: auto;
+    text-size-adjust: 100%;
   }
   body {
     @apply bg-background text-foreground;
     font-weight: 300;
+  }
+  img, svg, video {
+    image-rendering: auto;
+    max-width: 100%;
   }
 }

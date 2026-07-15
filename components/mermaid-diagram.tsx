@@ -1,49 +1,62 @@
 "use client"
 
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useRef, useState, memo } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Loader2 } from "lucide-react"
+import { useTheme } from "next-themes"
 
 interface Props {
   code: string
 }
 
-export function MermaidDiagram({ code }: Props) {
+export const MermaidDiagram = memo(function MermaidDiagram({ code }: Props) {
   const ref = useRef<HTMLDivElement>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState("")
+  const { theme } = useTheme()
 
   useEffect(() => {
     if (!code || !ref.current) return
 
-    let mermaid: any
     let cleanup = false
 
     const render = async () => {
       try {
-        mermaid = await import("mermaid")
-        mermaid.default.initialize({
+        const mermaid = (await import("mermaid")).default
+        mermaid.initialize({
           startOnLoad: false,
-          theme: "neutral",
-          themeVariables: {
-            primaryColor: "#222",
-            primaryTextColor: "#fff",
-            primaryBorderColor: "#222",
-            lineColor: "#888",
-            secondaryColor: "#f0f0f0",
-            tertiaryColor: "#fff",
-            fontFamily: "Inter Tight, sans-serif",
-          },
+          theme: theme === "dark" ? "dark" : "neutral",
+          themeVariables:
+            theme === "dark"
+              ? {
+                  primaryColor: "#333",
+                  primaryTextColor: "#ededed",
+                  primaryBorderColor: "#555",
+                  lineColor: "#555",
+                  secondaryColor: "#1a1a1a",
+                  tertiaryColor: "#0a0a0a",
+                  fontFamily: "Inter Tight, sans-serif",
+                }
+              : {
+                  primaryColor: "#222",
+                  primaryTextColor: "#fff",
+                  primaryBorderColor: "#222",
+                  lineColor: "#888",
+                  secondaryColor: "#f0f0f0",
+                  tertiaryColor: "#fff",
+                  fontFamily: "Inter Tight, sans-serif",
+                },
         })
 
         if (cleanup) return
 
-        const { svg } = await mermaid.default.render("mermaid-svg", code)
+        const id = "mermaid-" + Math.random().toString(36).slice(2, 8)
+        const { svg } = await mermaid.render(id, code)
         if (ref.current && !cleanup) {
           ref.current.innerHTML = svg
         }
         setLoading(false)
-      } catch (err: any) {
+      } catch {
         setError("Mermaid syntax error. Raw diagram code shown below:")
         setLoading(false)
       }
@@ -54,7 +67,7 @@ export function MermaidDiagram({ code }: Props) {
     return () => {
       cleanup = true
     }
-  }, [code])
+  }, [code, theme])
 
   if (!code) {
     return (
@@ -89,4 +102,4 @@ export function MermaidDiagram({ code }: Props) {
       </CardContent>
     </Card>
   )
-}
+})

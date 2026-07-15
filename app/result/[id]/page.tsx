@@ -1,10 +1,19 @@
-﻿"use client"
+"use client"
+
+import { Suspense, lazy } from "react"
+
+const PrdResult = lazy(() =>
+  import("@/components/prd-result").then((m) => ({ default: m.PrdResult }))
+)
+const MermaidDiagram = lazy(() =>
+  import("@/components/mermaid-diagram").then((m) => ({ default: m.MermaidDiagram }))
+)
+const PromptDisplay = lazy(() =>
+  import("@/components/prompt-display").then((m) => ({ default: m.PromptDisplay }))
+)
 
 import { useEffect, useState } from "react"
 import { useParams, useRouter } from "next/navigation"
-import { PrdResult } from "@/components/prd-result"
-import { MermaidDiagram } from "@/components/mermaid-diagram"
-import { PromptDisplay } from "@/components/prompt-display"
 import { Button } from "@/components/ui/button"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Loader2, FileText, GitBranch, Braces, ArrowLeft } from "lucide-react"
@@ -89,15 +98,21 @@ export default function ResultPage() {
         </TabsList>
 
         <TabsContent value="prd">
-          <PrdResult content={result.prd_content} />
+          <Suspense fallback={<Loader2 className="h-6 w-6 animate-spin" />}>
+            <PrdResult content={result.prd_content} />
+          </Suspense>
         </TabsContent>
 
         <TabsContent value="diagram">
-          <MermaidDiagram code={result.mermaid_diagram} />
+          <Suspense fallback={<Loader2 className="h-6 w-6 animate-spin" />}>
+            <MermaidDiagram code={result.mermaid_diagram} />
+          </Suspense>
         </TabsContent>
 
         <TabsContent value="prompt">
-          <PromptDisplay prompt={result.vibe_prompt} />
+          <Suspense fallback={<Loader2 className="h-6 w-6 animate-spin" />}>
+            <PromptDisplay prompt={result.vibe_prompt} />
+          </Suspense>
         </TabsContent>
       </Tabs>
     </div>
