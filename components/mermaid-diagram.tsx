@@ -24,14 +24,15 @@ export function MermaidDiagram({ code }: Props) {
         mermaid = await import("mermaid")
         mermaid.default.initialize({
           startOnLoad: false,
-          theme: "dark",
+          theme: "neutral",
           themeVariables: {
-            primaryColor: "#3b82f6",
+            primaryColor: "#222",
             primaryTextColor: "#fff",
-            primaryBorderColor: "#60a5fa",
-            lineColor: "#64748b",
-            secondaryColor: "#1e293b",
-            tertiaryColor: "#0f172a",
+            primaryBorderColor: "#222",
+            lineColor: "#888",
+            secondaryColor: "#f0f0f0",
+            tertiaryColor: "#fff",
+            fontFamily: "Inter Tight, sans-serif",
           },
         })
 
