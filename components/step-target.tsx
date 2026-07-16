@@ -15,14 +15,18 @@ export function StepTarget({ data, updateData }: Props) {
     <div className="space-y-6">
       <div className="space-y-2">
         <Label htmlFor="target_user" className="text-base">
-          Target User / Pengguna Target <span className="text-destructive">*</span>
+          Target User / Pengguna Target <span className="text-destructive" aria-hidden="true">*</span>
         </Label>
         <Textarea
           id="target_user"
-          placeholder="Who will use this app? Age, occupation, needs... / Siapa penggunanya? Usia, pekerjaan, kebutuhan..."
+          name="target_user"
+          autoComplete="off"
+          placeholder="Who will use this app? Age, occupation, needs… / Siapa penggunanya? Usia, pekerjaan, kebutuhan…"
           value={data.target_user}
           onChange={(e) => updateData({ target_user: e.target.value })}
           className="min-h-[100px]"
+          maxLength={1000}
+          aria-required="true"
           required
         />
       </div>
@@ -33,8 +37,8 @@ export function StepTarget({ data, updateData }: Props) {
             value={data.platform}
             onValueChange={(v) => updateData({ platform: v ?? "" })}
           >
-            <SelectTrigger>
-              <SelectValue placeholder="Select platform" />
+            <SelectTrigger id="platform" aria-label="Platform">
+              <SelectValue placeholder="Select platform…" />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="Web">Web</SelectItem>
@@ -51,8 +55,8 @@ export function StepTarget({ data, updateData }: Props) {
             value={data.timeline}
             onValueChange={(v) => updateData({ timeline: v ?? "" })}
           >
-            <SelectTrigger>
-              <SelectValue placeholder="Select timeline" />
+            <SelectTrigger id="timeline" aria-label="Timeline">
+              <SelectValue placeholder="Select timeline…" />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="1-2 weeks / 1-2 minggu">1-2 weeks (MVP sprint)</SelectItem>

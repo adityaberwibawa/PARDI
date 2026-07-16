@@ -17,42 +17,47 @@ export function StepTechnical({ data, updateData }: Props) {
     <div className="space-y-6">
       <div className="space-y-2">
         <Label htmlFor="features" className="text-base">
-          Fitur Utama / Core Features <span className="text-destructive">*</span>
+          Fitur Utama / Core Features <span className="text-destructive" aria-hidden="true">*</span>
         </Label>
         <Textarea
           id="features"
-          placeholder="List the main features (one per line):
-- User authentication
-- Product catalog
-- Shopping cart
-- Payment integration
-- Admin dashboard"
+          name="features"
+          autoComplete="off"
+          placeholder={`List the main features (one per line):\n- User authentication\n- Product catalog\n- Shopping cart\n- Payment integration\n- Admin dashboard`}
           value={data.features}
           onChange={(e) => updateData({ features: e.target.value })}
           className="min-h-[120px]"
+          maxLength={2000}
+          aria-required="true"
           required
         />
       </div>
       <div className="space-y-2">
         <Label htmlFor="tech_stack" className="text-base">
-          Tech Stack <span className="text-destructive">*</span>
+          Tech Stack <span className="text-destructive" aria-hidden="true">*</span>
         </Label>
         <Input
           id="tech_stack"
-          placeholder="e.g., Next.js, Tailwind, PostgreSQL, Prisma"
+          name="tech_stack"
+          type="text"
+          autoComplete="off"
+          spellCheck={false}
+          placeholder="e.g., Next.js, Tailwind, PostgreSQL, Prisma…"
           value={data.tech_stack}
           onChange={(e) => updateData({ tech_stack: e.target.value })}
+          maxLength={200}
+          aria-required="true"
           required
         />
       </div>
       <div className="space-y-2">
-        <Label>AI Model</Label>
+        <Label htmlFor="model">AI Model</Label>
         <Select
           value={data.model}
           onValueChange={(v) => updateData({ model: v ?? "qwen/qwen3-32b" })}
         >
-          <SelectTrigger>
-            <SelectValue placeholder="Select AI model" />
+          <SelectTrigger id="model" aria-label="AI model">
+            <SelectValue placeholder="Select AI model…" />
           </SelectTrigger>
           <SelectContent>
             {AVAILABLE_MODELS.map((m) => (
@@ -68,9 +73,14 @@ export function StepTechnical({ data, updateData }: Props) {
         <Label htmlFor="reference_links">Referensi / Inspiration (optional)</Label>
         <Input
           id="reference_links"
-          placeholder="e.g., Figma link, similar apps, design inspiration"
+          name="reference_links"
+          type="text"
+          autoComplete="off"
+          spellCheck={false}
+          placeholder="e.g., Figma link, similar apps, design inspiration…"
           value={data.reference_links}
           onChange={(e) => updateData({ reference_links: e.target.value })}
+          maxLength={500}
         />
       </div>
     </div>

@@ -11,6 +11,7 @@ import { StepBasicInfo } from "./step-basic-info"
 import { StepTarget } from "./step-target"
 import { StepTechnical } from "./step-technical"
 import type { FormData } from "@/lib/types"
+import { createClient } from "@/lib/supabase/client"
 
 const STEPS = ["Basic Info", "Target & Scope", "Technical"]
 
@@ -34,11 +35,12 @@ export function MultiStepForm() {
   const router = useRouter()
 
   useEffect(() => {
-    import("@/lib/supabase/client").then(async (mod) => {
-      const supabase = mod.createClient()
-      const { data: { user } } = await supabase.auth.getUser()
-      if (user) setUserId(user.id)
-    }).catch(() => {})
+    try {
+      const supabase = createClient()
+      supabase.auth.getUser().then(({ data: { user } }) => {
+        if (user) setUserId(user.id)
+      })
+    } catch {}
   }, [])
 
   const updateData = (partial: Partial<FormData>) => {
@@ -89,14 +91,15 @@ export function MultiStepForm() {
       })
 
       if (!response.ok) {
-        const err = await response.json()
+        const err = await response.json().catch(() => ({}))
         throw new Error(err.error || "Generation failed")
       }
 
       const result = await response.json()
       router.push(`/result/${result.id}`)
-    } catch (err: any) {
-      toast.error(err.message || "Something went wrong")
+    } catch (err) {
+      const message = err instanceof Error ? err.message : "Something went wrong"
+      toast.error(message)
     } finally {
       setLoading(false)
     }
@@ -107,48 +110,69 @@ export function MultiStepForm() {
   return (
     <div className="space-y-8">
       <div className="space-y-2">
-        <div className="flex justify-between text-sm text-muted-foreground">
-          <span>Step {step + 1} of {STEPS.length}</span>
+        <div
+          className="flex justify-between text-sm text-muted-foreground"
+          aria-live="polite"
+        >
+          <span>
+            Step {step + 1} of {STEPS.length}
+          </span>
           <span>{STEPS[step]}</span>
         </div>
-        <Progress value={progress} className="h-2" />
+        <Progress
+          value={progress}
+          className="h-2"
+          aria-label={`Progress: step ${step + 1} of ${STEPS.length}`}
+        />
       </div>
 
       <Card>
         <CardContent className="pt-6">
-          {step === 0 && <StepBasicInfo data={data} updateData={updateData} />}
-          {step === 1 && <StepTarget data={data} updateData={updateData} />}
-          {step === 2 && <StepTechnical data={data} updateData={updateData} />}
+          <form
+            onSubmit={(e) => {
+              e.preventDefault()
+              if (step === STEPS.length - 1) handleSubmit()
+              else nextStep()
+            }}
+          >
+            {step === 0 && <StepBasicInfo data={data} updateData={updateData} />}
+            {step === 1 && <StepTarget data={data} updateData={updateData} />}
+            {step === 2 && <StepTechnical data={data} updateData={updateData} />}
+            <div className="flex justify-between mt-8">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={prevStep}
+                disabled={step === 0}
+              >
+                <ArrowLeft className="h-4 w-4 mr-2" aria-hidden="true" />
+                Back
+              </Button>
+
+              {step < STEPS.length - 1 ? (
+                <Button type="submit">
+                  Next
+                  <ArrowRight className="h-4 w-4 ml-2" aria-hidden="true" />
+                </Button>
+              ) : (
+                <Button type="submit" disabled={loading}>
+                  {loading ? (
+                    <>
+                      <Loader2 className="h-4 w-4 mr-2 animate-spin" aria-hidden="true" />
+                      Generating…
+                    </>
+                  ) : (
+                    <>
+                      <Sparkles className="h-4 w-4 mr-2" aria-hidden="true" />
+                      Generate PRD
+                    </>
+                  )}
+                </Button>
+              )}
+            </div>
+          </form>
         </CardContent>
       </Card>
-
-      <div className="flex justify-between">
-        <Button variant="outline" onClick={prevStep} disabled={step === 0}>
-          <ArrowLeft className="h-4 w-4 mr-2" />
-          Back
-        </Button>
-
-        {step < STEPS.length - 1 ? (
-          <Button onClick={nextStep}>
-            Next
-            <ArrowRight className="h-4 w-4 ml-2" />
-          </Button>
-        ) : (
-          <Button onClick={handleSubmit} disabled={loading}>
-            {loading ? (
-              <>
-                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                Generating...
-              </>
-            ) : (
-              <>
-                <Sparkles className="h-4 w-4 mr-2" />
-                Generate PRD
-              </>
-            )}
-          </Button>
-        )}
-      </div>
     </div>
   )
 }
